@@ -1,0 +1,28 @@
+This is the base CIBSE Algorithm. This is differentiated from the Sin 14 R-1 Algorithm solely by the time assumption for maximum solar radiation.
+
+This assumption is endogenous in the base data that a user would enter into this function.
+
+For more info on underlying assumptions between algorithms read D.H.C. Chow and G. J. Levermore (2007). 
+
+#CIBSE
+CIBSE <- function(t,timemin,timemax,tempmin,tempmax) {
+  if(t<timemin){
+  f1 = (cos(pi*(timemin - t)/24 + timemin - timemax) + 1)/2
+  }
+  else if (timemin < t & t < timemax){
+  f1 = (cos(pi*(t - timemin)/timemax - timemin) + 1)/2
+  }
+  else if (timemin < t){
+  f1 = (cos(pi*(24 + timemin - t)/24 + timemin - timemax) + 1)/2
+  }
+  
+  else{
+    print("ERROR T is messed up")
+  }
+ 
+  f2 = (1 - f1)
+  
+  temp = (f1 * tempmin) + (f2 * tempmax)
+  
+  return (temp)
+}
