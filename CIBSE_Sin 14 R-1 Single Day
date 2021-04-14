@@ -6,6 +6,13 @@ For more info on underlying assumptions between algorithms read D.H.C. Chow and 
 
 This algorithm treats each day as separate, but allows for computationally efficient hourly downscaling.
 
+
+#Input definitions:
+Where t = hour of the day we would like to downscale temperature for,TimeMin = time when minimum daily temperature was observed,
+TimeMax = time when maximum daily temperature was observed, TempMin = Min temp observed for that day, TempMax = Max temp observed for that day.
+
+*t must be entered in military time terms (0 - 23)
+
 #CIBSE
 CIBSE <- function(t,timemin,timemax,tempmin,tempmax) {
   if(t<timemin){
