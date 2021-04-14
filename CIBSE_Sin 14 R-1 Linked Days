@@ -1,4 +1,13 @@
+  
+This is the Linking days CIBSE & Sin 14 R-1 Algorithm. These algorithms differentiate themselves from one another solely by the time assumption for maximum solar radiation.
+
+This assumption is endogenous in the base data that a user would enter into this function.
+
+For more info on underlying assumptions between algorithms read D.H.C. Chow and G. J. Levermore (2007).
+
 This algorithm links one day's downscaling to the next, allowing for more accurate temperature downscaling (especially from hour 23 of one day to hour 0 of the next). 
+
+
 
 Important Info:
 *All time data must be in military time (hour 0 - hour 23)*
