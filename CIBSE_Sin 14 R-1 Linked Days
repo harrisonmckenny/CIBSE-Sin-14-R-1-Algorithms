@@ -1,0 +1,94 @@
+This algorithm links one day's downscaling to the next, allowing for more accurate temperature downscaling (especially from hour 23 of one day to hour 0 of the next). 
+
+Important Info:
+*All time data must be in military time (hour 0 - hour 23)*
+*Users must have daily min/max for the day before the first day they would like to downscale and the day after the last day they would like to downscale*
+
+#Input definitions:
+Where WD = date weather was observed, PD = the first day of weather you want to downscale, LD = the last day of weather you want to downscale,
+TempMin = Min temp observed for that day, TempMax = Max temp observed for that day, TimeMin = time when minimum daily temperature was observed,
+TimeMax = time when maximum daily temperature was observed.
+
+Function:
+CIBSE_Link <- function(WD,PD,LD,TempMin,TempMax,TimeMin,TimeMax){
+
+#Initializing list & vectors:
+  
+TempTime = list()
+  
+smallvec_pre = c()
+  
+season_vec = c()
+  
+smallvec_post = c()
+
+t = 0:23 #Military Time (R is not zero-indexed)
+ 
+#Conditional Statement Waterfall:
+
+
+ for (i in 1:length(WD)){ #day before planting
+ 
+ if(WD[i] < PD[i]){
+   
+   for(h in 1:length(t)){
+     
+smallvec_pre[h] = 999
+
+   }
+   
+   TempTime[[i]] <- smallvec_pre
+ 
+ }
+   
+ else if (WD[i] >= PD[i] & WD[i] <= LD[i]){ #while plants are in ground
+
+#Looping through linking day algorithm   
+      
+for(j in 1:length(t)){
+
+season_vec[j] = ifelse(t[j] < TimeMin[i],
+                         ((TempMin[i] + TempMax[i-1])/2) -
+                           (
+                             ((TempMin[i] - TempMax[i-1])/2) * cos((pi*(t[j]-TimeMax[i-1]))/(TimeMin[i] - TimeMax[i-1]))
+                          ),
+                         ifelse(t[j] >= TimeMin[i] & t[j] < TimeMax[i],
+                                ((TempMax[i] + TempMin[i])/2) -
+                                  (
+                                    ((TempMax[i] - TempMin[i])/2) * cos( (pi*(t[j]-TimeMin[i]))/(TimeMax[i] - TimeMin[i]))
+                          ),
+                          ifelse(t[j]>= TimeMax[i],
+                                 ((TempMin[i+1] + TempMax[i])/2) - 
+                                   (
+                             ((TempMin[i+1] - TempMax[i])/2) * cos((pi*(t[j]-TimeMax[i]))/(TimeMin[i+1] - TimeMax[i]))
+                                   ),
+                             999)))
+}
+   
+   TempTime[[i]] <- season_vec #building list of hourly observations for each day
+   
+ }
+   
+   else{ #day after harvest is finished
+  
+for(k in 1:length(t)){ 
+
+smallvec_post[k] = 999
+
+}
+     
+TempTime[[i]] <- smallvec_post
+
+     }
+   
+ }
+
+TempTime[[length(WD)]] <- NULL #Must Null the day after harvest first because nullifying drops the index, so if we drop the day before harvest first, we cant use length(WD) as an argument
+
+TempTime[[1]] <- NULL
+
+
+
+return(TempTime) #list of hourly observations less the day before planting and after completed harvest
+
+}
