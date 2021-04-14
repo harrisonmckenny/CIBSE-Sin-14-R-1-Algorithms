@@ -4,6 +4,8 @@ This assumption is endogenous in the base data that a user would enter into this
 
 For more info on underlying assumptions between algorithms read D.H.C. Chow and G. J. Levermore (2007). 
 
+This algorithm treats each day as separate, but allows for computationally efficient hourly downscaling.
+
 #CIBSE
 CIBSE <- function(t,timemin,timemax,tempmin,tempmax) {
   if(t<timemin){
